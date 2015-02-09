@@ -27,3 +27,7 @@ class SizedParserBuffer(object):
             return True
         else:
             return False
+
+    def reset(self):
+        self.buffer = ''
+        self.received = 0

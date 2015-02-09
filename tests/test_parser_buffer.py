@@ -13,7 +13,7 @@ class TestSizedParserBuffer(object):
         assert_equal(True, self.sizedParserBuffer.add_data(IOBuffer('hello')))
         assert_equal('hell', self.sizedParserBuffer.result)
 
-    def test_remaining(self):
+    def test_received(self):
         assert_equal(False, self.sizedParserBuffer.add_data(IOBuffer('hel')))
         assert_equal(3, self.sizedParserBuffer.received)
 
@@ -21,8 +21,13 @@ class TestSizedParserBuffer(object):
         assert_equal(False, self.sizedParserBuffer.add_data(IOBuffer('hel')))
         assert_equal(1, self.sizedParserBuffer.remaining)
 
-    def test_remaining(self):
+    def test_is_finished(self):
         assert_equal(False, self.sizedParserBuffer.add_data(IOBuffer('hel')))
         assert_equal(False, self.sizedParserBuffer.is_finished)
         assert_equal(True, self.sizedParserBuffer.add_data(IOBuffer('lo')))
         assert_equal(True, self.sizedParserBuffer.is_finished)
+
+    def test_reset(self):
+        self.sizedParserBuffer.add_data(IOBuffer('hel'))
+        self.sizedParserBuffer.reset()
+        assert_equal(0, self.sizedParserBuffer.received)
