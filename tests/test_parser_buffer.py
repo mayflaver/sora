@@ -118,4 +118,22 @@ class TestBytes(object):
         assert_equal('o wo', self.parser.parser(data))
         assert_equal(None, self.parser.parser(data))
         
+class TestCombine(object):
 
+    def setUp(self):
+        self.parser = Bytes(4).combine(Bytes(4))
+
+    def test_parser(self):
+        data = IOBuffer('hello world')
+        assert_equal(('hell', 'o wo'), self.parser.parser(data))
+        assert_equal(None, self.parser.parser(data))
+
+
+class TestThen(object):
+
+    def setUp(self):
+        self.parser = Bytes(2).then(lambda x: x*3)
+
+    def test_parser(self):
+        data = IOBuffer('hello world')
+        assert_equal('hehehe', self.parser.parser(data))

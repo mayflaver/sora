@@ -95,6 +95,13 @@ class Parser(object):
     def parser(self, data):
         raise NotImplementedError()
 
+    def combine(self, other):
+        return _Combinater(self, other)
+
+    def then(self, func):
+        return _Then(self, func)
+        
+
 
 class Byte(Parser):
     """ parser one byte """
@@ -117,3 +124,38 @@ class Bytes(Parser):
             return result
         else:
             return None
+
+
+class _Combinater(Parser):
+
+    def __init__(self, parser1, parser2):
+        self._parser = (parser1, parser2)
+        self._result = ['', '']
+        self.index = 0
+    def parser(self, data):
+        result = self._parser[self.index].parser(data)
+        if (result):
+            if (self.index == 0):
+                self._result[self.index] = result
+                self.index += 1
+                return self.parser(data)
+            else:
+                self._result[self.index] = result
+                self.index = 0
+                return tuple(self._result)
+        else:
+            None
+
+
+class _Then(Parser):
+
+    def __init__(self, parser1, func):
+        self.parser1 = parser1
+        self.func = func
+
+    def parser(self, data):
+        result = self.parser1.parser(data)
+        if (result):
+            return self.func(result)
+        else:
+            None
