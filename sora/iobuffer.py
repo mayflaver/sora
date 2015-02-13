@@ -9,6 +9,7 @@ class IOBuffer:
         self.data = data
         self.read = 0
 
+    @property
     def next(self):
         """Get the next byte, removing it from the buffer. warning:  This
         method will throw an exception if no data is left.

@@ -9,7 +9,7 @@ class TestIOBuffer(object):
         self.iobuffer = IOBuffer('hello world')
 
     def test_next(self):
-        assert_equal('h', self.iobuffer.next())
+        assert_equal('h', self.iobuffer.next)
 
     def test_take(self):
         assert_equal('hello', self.iobuffer.take(5))
