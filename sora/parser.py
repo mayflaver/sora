@@ -89,3 +89,31 @@ class UnsizedParserBuffer(object):
             and self.data == other.data \
             and self.skiped == other.skiped \
             and self.check_index == other.check_index
+
+
+class Parser(object):
+    def parser(self, data):
+        raise NotImplementedError()
+
+
+class Byte(Parser):
+    """ parser one byte """
+    def parser(self, data):
+        if (data.has_next):
+            return data.next
+        else:
+            return None
+
+class Bytes(Parser):
+    """ parser multi bytes """
+    def __init__(self, n):
+        self.buffer = SizedParserBuffer(n)
+        
+    def parser(self, data):
+        result = ''
+        if (self.buffer.add_data(data)):
+            result = self.buffer.result
+            self.buffer.reset()
+            return result
+        else:
+            return None
