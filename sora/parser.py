@@ -100,6 +100,9 @@ class Parser(object):
 
     def then(self, func):
         return _Then(self, func)
+
+    def link(self, func):
+        return _Link(self, func)
         
 
 
@@ -159,3 +162,23 @@ class _Then(Parser):
             return self.func(result)
         else:
             None
+
+class _Link(Parser):
+
+    def __init__(self, parser1, func):
+        self.parser1 = parser1
+        self.parser1_complete = False
+        self.func = func
+
+    def parser(self, data):
+        if (not self.parser1_complete):
+            result = self.parser1.parser(data)
+            if (result):
+                return self.func(result).parser(data)
+            else:
+                return None
+        else:
+            return self.func(result)
+        
+            
+        

@@ -137,3 +137,12 @@ class TestThen(object):
     def test_parser(self):
         data = IOBuffer('hello world')
         assert_equal('hehehe', self.parser.parser(data))
+
+class TestLink(object):
+
+    def setUp(self):
+        self.parser = Bytes(2).link(lambda x: Bytes(2))
+
+    def test_parser(self):
+        data = IOBuffer('hello world')
+        assert_equal('ll', self.parser.parser(data))
