@@ -14,7 +14,7 @@ Here is a simple echo demo:
         def handle_stream(self, stream, address):
             def callback(data):
                 stream.write(data)
-                stream.read_until_close(streaming_callback=DataHandler(UnsizedParserBuffer('\n', include=True), callback))
+            stream.read_until_close(streaming_callback=DataHandler(UnsizedParserBuffer('\n', include=True), callback))
 
     if __name__ == '__main__':
         server = EchoServer()
