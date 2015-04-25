@@ -129,6 +129,22 @@ class Bytes(Parser):
             return None
 
 
+class BytesUntil(Parser):
+    """ paresr multi bytes until terminal and The terminus is NOT included in
+    the returned value """
+    def __init__(self, terminal):
+        self.buffer = UnsizedParserBuffer(terminal)
+
+    def parser(self, data):
+        result = ''
+        if (self.buffer.add_data(data)):
+            result = self.buffer.result
+            self.buffer.reset()
+            return result
+        else:
+            return None
+
+
 class _Combinater(Parser):
 
     def __init__(self, parser1, parser2):

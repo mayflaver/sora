@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from sora.parser import SizedParserBuffer, UnsizedParserBuffer, Byte, Bytes
+from sora.parser import SizedParserBuffer, UnsizedParserBuffer, Byte, Bytes, BytesUntil
 from sora.iobuffer import IOBuffer
 from nose.tools import assert_equal
 
@@ -55,8 +55,6 @@ class TestUnsizedParserBufferUnincludeTerminal(object):
         assert_equal(self.unsizedParserBufferUnincludeTerminal, UnsizedParserBuffer("foo"))
 
                      
-
-        
 class TestUnsizedParserBufferIncludeTerminal(object):
     
     def setUp(self):
@@ -117,6 +115,18 @@ class TestBytes(object):
         assert_equal('hell', self.parser.parser(data))
         assert_equal('o wo', self.parser.parser(data))
         assert_equal(None, self.parser.parser(data))
+
+
+class TestBytesUntil(object):
+
+    def setUp(self):
+        self.parser = BytesUntil("\n")
+
+    def test_parser(self):
+        data = IOBuffer("hello\nworld\n")
+        assert_equal('hello', self.parser.parser(data))
+        assert_equal('world', self.parser.parser(data))
+
         
 class TestCombine(object):
 
