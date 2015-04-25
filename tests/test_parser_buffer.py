@@ -139,6 +139,28 @@ class TestCombine(object):
         assert_equal(None, self.parser.parser(data))
 
 
+class TestPreCombine(object):
+
+    def setUp(self):
+        self.parser = Bytes(4).precombine(Bytes(4))
+
+    def test_parser(self):
+        data = IOBuffer('hello world')
+        assert_equal('hell', self.parser.parser(data))
+        assert_equal(None, self.parser.parser(data))
+
+
+class TestSufCombine(object):
+
+    def setUp(self):
+        self.parser = Bytes(4).sufcombine(Bytes(4))
+
+    def test_parser(self):
+        data = IOBuffer('hello world')
+        assert_equal('o wo', self.parser.parser(data))
+        assert_equal(None, self.parser.parser(data))
+
+
 class TestThen(object):
 
     def setUp(self):

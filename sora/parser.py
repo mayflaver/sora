@@ -98,6 +98,12 @@ class Parser(object):
     def combine(self, other):
         return _Combinater(self, other)
 
+    def precombine(self, other):
+        return _PreCombinater(self, other)
+
+    def sufcombine(self, other):
+        return _SufCombinater(self, other)
+
     def then(self, func):
         return _Then(self, func)
 
@@ -146,7 +152,7 @@ class BytesUntil(Parser):
 
 
 class _Combinater(Parser):
-
+    """ combine two parser and return result in tuple """
     def __init__(self, parser1, parser2):
         self._parser = (parser1, parser2)
         self._result = ['', '']
@@ -162,6 +168,48 @@ class _Combinater(Parser):
                 self._result[self.index] = result
                 self.index = 0
                 return tuple(self._result)
+        else:
+            None
+
+
+class _PreCombinater(_Combinater):
+    """ combine two parser and return pre parser result """
+    def __init__(self, parser1, parser2):
+        self._parser = (parser1, parser2)
+        self._result = ['', '']
+        self.index = 0
+    def parser(self, data):
+        result = self._parser[self.index].parser(data)
+        if (result):
+            if (self.index == 0):
+                self._result[self.index] = result
+                self.index += 1
+                return self.parser(data)
+            else:
+                self._result[self.index] = result
+                self.index = 0
+                return self._result[0]
+        else:
+            None
+
+
+class _SufCombinater(_Combinater):
+    """ combine two parser and return suf parser result """
+    def __init__(self, parser1, parser2):
+        self._parser = (parser1, parser2)
+        self._result = ['', '']
+        self.index = 0
+    def parser(self, data):
+        result = self._parser[self.index].parser(data)
+        if (result):
+            if (self.index == 0):
+                self._result[self.index] = result
+                self.index += 1
+                return self.parser(data)
+            else:
+                self._result[self.index] = result
+                self.index = 0
+                return self._result[1]
         else:
             None
 
