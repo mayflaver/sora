@@ -23,6 +23,7 @@ Here is a simple echo demo:
 
 # Current supported protocols:
 * echo
+* redis
 
 # Third-party protocol extensions
 We're currently asking anyone working on implementing support for new protocols to build your project and make share with others. 
