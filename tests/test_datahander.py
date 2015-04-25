@@ -11,7 +11,7 @@ class TestDataHandler(object):
         self.result = ""
         def callback(data):
             self.result += data
-        self.datahandler = DataHandler(SizedParserBuffer(4), callback)
+        self.datahandler = DataHandler(Bytes(4), callback)
 
     def test_call(self):
         self.datahandler("hello world")

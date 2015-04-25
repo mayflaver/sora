@@ -8,13 +8,13 @@ Here is a simple echo demo:
     from tornado.ioloop import IOLoop
 
     from sora.datahandler import DataHandler
-    from sora.parser import UnsizedParserBuffer
+    from sora.parser import BytesUntil
 
     class EchoServer(TCPServer):
         def handle_stream(self, stream, address):
             def callback(data):
                 stream.write(data)
-            stream.read_until_close(streaming_callback=DataHandler(UnsizedParserBuffer('\n', include=True), callback))
+            stream.read_until_close(streaming_callback=DataHandler(BytesUntil('\n').then(lambda x: x+'\n'), callback))
 
     if __name__ == '__main__':
         server = EchoServer()

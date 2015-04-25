@@ -1,14 +1,14 @@
 from tornado.tcpserver import TCPServer
 from tornado.ioloop import IOLoop
 
+from sora.parser import BytesUntil
 from sora.datahandler import DataHandler
-from sora.parser import UnsizedParserBuffer
 
 class EchoServer(TCPServer):
     def handle_stream(self, stream, address):
         def callback(data):
             stream.write(data)
-        stream.read_until_close(streaming_callback=DataHandler(UnsizedParserBuffer('\n', include=True), callback))
+        stream.read_until_close(streaming_callback=DataHandler(BytesUntil('\n').then(lambda x: x+'\n'), callback))
 
 
 if __name__ == '__main__':

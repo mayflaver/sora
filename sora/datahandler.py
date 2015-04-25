@@ -14,9 +14,8 @@ class DataHandler(object):
         else:
             self.buffer = IOBuffer(self.buffer.take_all+data)
         while 1:
-            complete = self.parser.add_data(self.buffer)
-            if complete:
-                self.callback(self.parser.result)
-                self.parser.reset()
+            result = self.parser.parser(self.buffer)
+            if result:
+                self.callback(result)
             else:
                 break
