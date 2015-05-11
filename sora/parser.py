@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import struct
+
 class SizedParserBuffer(object):
     """ Buffer sized data """
     def __init__(self, n):
@@ -131,6 +133,93 @@ class Bytes(Parser):
             result = self.buffer.result
             self.buffer.reset()
             return result
+        else:
+            return None
+
+class Short(Parser):
+    """ parser short """
+    def __init__(self):
+        self.buffer = SizedParserBuffer(2)
+
+    def parser(self, data):
+        result = ''
+        if (self.buffer.add_data(data)):
+            result = self.buffer.result
+            self.buffer.reset()
+            return struct.unpack('>h', result)[0]
+        else:
+            return None
+
+
+class UnsignedShort(Parser):
+    """ parser unsigned short """
+    def __init__(self):
+        self.buffer = SizedParserBuffer(2)
+
+    def parser(self, data):
+        result = ''
+        if (self.buffer.add_data(data)):
+            result = self.buffer.result
+            self.buffer.reset()
+            return struct.unpack('>H', result)[0]
+        else:
+            return None
+
+
+class Int(Parser):
+    """ parser int """
+    def __init__(self):
+        self.buffer = SizedParserBuffer(4)
+
+    def parser(self, data):
+        result = ''
+        if (self.buffer.add_data(data)):
+            result = self.buffer.result
+            self.buffer.reset()
+            return struct.unpack('>i', result)[0]
+        else:
+            return None
+
+class UnsignedInt(Parser):
+    """ parser unsigned int """
+    def __init__(self):
+        self.buffer = SizedParserBuffer(4)
+
+    def parser(self, data):
+        result = ''
+        if (self.buffer.add_data(data)):
+            result = self.buffer.result
+            self.buffer.reset()
+            return struct.unpack('>I', result)[0]
+        else:
+            return None
+
+
+class Long(Parser):
+    """ parser long """
+    def __init__(self):
+        self.buffer = SizedParserBuffer(8)
+
+    def parser(self, data):
+        result = ''
+        if (self.buffer.add_data(data)):
+            result = self.buffer.result
+            self.buffer.reset()
+            return struct.unpack('>q', result)[0]
+        else:
+            return None
+
+class UnsignedLong(Parser):
+    """ parser unsigned long """
+    def __init__(self):
+        self.buffer = SizedParserBuffer(8)
+
+    def parser(self, data):
+        result = ''
+        if (self.buffer.add_data(data)):
+            result = self.buffer.result
+            self.buffer.reset()
+            return struct.unpack('>Q', result)[0]
         else:
             return None
 

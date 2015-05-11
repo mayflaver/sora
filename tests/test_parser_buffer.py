@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from sora.parser import SizedParserBuffer, UnsizedParserBuffer, Byte, Bytes, BytesUntil
+from sora.parser import SizedParserBuffer, UnsizedParserBuffer, Byte, Bytes, BytesUntil, Short, UnsignedShort, Int, UnsignedInt, Long, UnsignedLong
 from sora.iobuffer import IOBuffer
 from nose.tools import assert_equal
 
@@ -115,6 +115,66 @@ class TestBytes(object):
         assert_equal('hell', self.parser.parser(data))
         assert_equal('o wo', self.parser.parser(data))
         assert_equal(None, self.parser.parser(data))
+
+
+class TestShort(object):
+
+    def setUp(self):
+        self.parser = Short()
+
+    def test_parser(self):
+        data = IOBuffer('\xff\xff')
+        assert_equal(-1, self.parser.parser(data))
+
+
+class TestUnsignedShort(object):
+
+    def setUp(self):
+        self.parser = UnsignedShort()
+
+    def test_parser(self):
+        data = IOBuffer('\xff\xff')
+        assert_equal(2**16-1, self.parser.parser(data))
+
+
+class TestInt(object):
+
+    def setUp(self):
+        self.parser = Int()
+
+    def test_parser(self):
+        data = IOBuffer('\xff\xff\xff\xff')
+        assert_equal(-1, self.parser.parser(data))
+
+
+class TestUnsignedInt(object):
+
+    def setUp(self):
+        self.parser = UnsignedInt()
+
+    def test_parser(self):
+        data = IOBuffer('\xff\xff\xff\xff')
+        assert_equal(2**32-1, self.parser.parser(data))
+
+
+class TestLong(object):
+
+    def setUp(self):
+        self.parser = Long()
+
+    def test_parser(self):
+        data = IOBuffer('\xff\xff\xff\xff\xff\xff\xff\xff')
+        assert_equal(-1, self.parser.parser(data))
+
+
+class TestUnsignedLong(object):
+
+    def setUp(self):
+        self.parser = UnsignedLong()
+
+    def test_parser(self):
+        data = IOBuffer('\xff\xff\xff\xff\xff\xff\xff\xff')
+        assert_equal(2**64-1, self.parser.parser(data))
 
 
 class TestBytesUntil(object):
