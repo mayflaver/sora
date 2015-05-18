@@ -54,5 +54,16 @@ class IOBuffer:
         """Returns how many bytes have already been read"""
         return self.read
 
+    def skip(self, n):
+        if (n <= self.remaining):
+            self.read += n
+            self.data = self.data[n:]
+        else:
+            self.read += self.remaining
+            self.data = self.data[self.remaining:]
+
+    def skip_all(self):
+        self.skip(self.remaining)
+
     def __eq__(self, other):
         return self.take_all == other.take_all

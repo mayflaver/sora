@@ -11,6 +11,16 @@ class TestIOBuffer(object):
     def test_next(self):
         assert_equal('h', self.iobuffer.next)
 
+    def test_skip(self):
+        self.iobuffer.skip(1)
+        assert_equal(10, self.iobuffer.remaining)
+        self.iobuffer.skip(12)
+        assert_equal(0, self.iobuffer.remaining)
+
+    def test_skip_all(self):
+        self.iobuffer.skip_all()
+        assert_equal(0, self.iobuffer.remaining)
+
     def test_take(self):
         assert_equal('hello', self.iobuffer.take(5))
 
