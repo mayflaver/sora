@@ -66,6 +66,9 @@ class UnsizedParserBuffer(object):
                 if (not self.include):
                     self.data += self.terminal[0:self.check_index]
                 self.check_index = 0
+                if (byte == self.terminal[self.check_index]):
+                    self.check_index += 1
+                    return False
             self.data += byte
             return False
 

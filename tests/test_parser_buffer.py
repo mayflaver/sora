@@ -43,8 +43,8 @@ class TestUnsizedParserBufferUnincludeTerminal(object):
 
     def test_add_data(self):
         assert_equal(False, self.unsizedParserBufferUnincludeTerminal.add_data(IOBuffer("somef")))
-        assert_equal(True, self.unsizedParserBufferUnincludeTerminal.add_data(IOBuffer("oos")))
-        assert_equal("some", self.unsizedParserBufferUnincludeTerminal.result)
+        assert_equal(True, self.unsizedParserBufferUnincludeTerminal.add_data(IOBuffer("foos")))
+        assert_equal("somef", self.unsizedParserBufferUnincludeTerminal.result)
 
     def test_equal(self):
         assert_equal(self.unsizedParserBufferUnincludeTerminal, UnsizedParserBuffer("foo"))
