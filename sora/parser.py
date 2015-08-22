@@ -323,18 +323,23 @@ class _Link(Parser):
 
     def __init__(self, parser1, func):
         self.parser1 = parser1
-        self.parser1_complete = False
+        self.parser2 = None
         self.func = func
 
     def parser(self, data):
-        if (not self.parser1_complete):
+        if self.parser2 is None:
             result = self.parser1.parser(data)
             if (result):
-                return self.func(result).parser(data)
+                self.parser2 = self.func(result)
+                result =  self.parser2.parser(data)
+                if (result is not None):
+                    self.parser2 = None
+                return result
             else:
                 return None
         else:
-            return self.func(result)
-        
-            
-        
+            result =  self.parser2.parser(data)
+            if (result is not None):
+                self.parser2 = None
+            return result
+

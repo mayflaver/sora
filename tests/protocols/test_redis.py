@@ -31,5 +31,8 @@ class TestRedis(object):
         data1 = IOBuffer('*1\r\n$3\r\nfoo\r\n')
         assert_equal(('foo',), self.parser.parser(data1))
         # array with >1 element
-        data2 = IOBuffer('*2\r\n$3\r\nfoo\r\n$3\r\nbar\r\n')
-        assert_equal(('foo', 'bar'), self.parser.parser(data2))
+        data2 = IOBuffer('*2\r\n$3\r\nfoo\r\n$3\r\n')
+        assert_equal(None, self.parser.parser(data2))
+        data3 = IOBuffer('bar\r\n')
+        assert_equal(('foo', 'bar'), self.parser.parser(data3))
+

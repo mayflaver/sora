@@ -123,8 +123,10 @@ class TestShort(object):
         self.parser = Short()
 
     def test_parser(self):
-        data = IOBuffer('\xff\xff')
-        assert_equal(-1, self.parser.parser(data))
+        data1 = IOBuffer('\xff')
+        assert_equal(None, self.parser.parser(data1))
+        data2 = IOBuffer('\xff')
+        assert_equal(-1, self.parser.parser(data2))
 
 
 class TestUnsignedShort(object):
@@ -133,8 +135,10 @@ class TestUnsignedShort(object):
         self.parser = UnsignedShort()
 
     def test_parser(self):
-        data = IOBuffer('\xff\xff')
-        assert_equal(2**16-1, self.parser.parser(data))
+        data1 = IOBuffer('\xff')
+        assert_equal(None, self.parser.parser(data1))
+        data2 = IOBuffer('\xff')
+        assert_equal(2**16-1, self.parser.parser(data2))
 
 
 class TestInt(object):
@@ -143,8 +147,11 @@ class TestInt(object):
         self.parser = Int()
 
     def test_parser(self):
-        data = IOBuffer('\xff\xff\xff\xff')
-        assert_equal(-1, self.parser.parser(data))
+        data1 = IOBuffer('\xff')
+        assert_equal(None, self.parser.parser(data1))
+
+        data2 = IOBuffer('\xff\xff\xff')
+        assert_equal(-1, self.parser.parser(data2))
 
 
 class TestUnsignedInt(object):
@@ -153,8 +160,10 @@ class TestUnsignedInt(object):
         self.parser = UnsignedInt()
 
     def test_parser(self):
-        data = IOBuffer('\xff\xff\xff\xff')
-        assert_equal(2**32-1, self.parser.parser(data))
+        data1 = IOBuffer('\xff')
+        assert_equal(None, self.parser.parser(data1))
+        data2 = IOBuffer('\xff\xff\xff')
+        assert_equal(2**32-1, self.parser.parser(data2))
 
 
 class TestLong(object):
@@ -163,8 +172,10 @@ class TestLong(object):
         self.parser = Long()
 
     def test_parser(self):
-        data = IOBuffer('\xff\xff\xff\xff\xff\xff\xff\xff')
-        assert_equal(-1, self.parser.parser(data))
+        data1 = IOBuffer('\xff\xff\xff\xff')
+        assert_equal(None, self.parser.parser(data1))
+        data2 = IOBuffer('\xff\xff\xff\xff')
+        assert_equal(-1, self.parser.parser(data2))
 
 
 class TestUnsignedLong(object):
@@ -173,8 +184,10 @@ class TestUnsignedLong(object):
         self.parser = UnsignedLong()
 
     def test_parser(self):
-        data = IOBuffer('\xff\xff\xff\xff\xff\xff\xff\xff')
-        assert_equal(2**64-1, self.parser.parser(data))
+        data1 = IOBuffer('\xff\xff\xff\xff')
+        assert_equal(None, self.parser.parser(data1))
+        data2 = IOBuffer('\xff\xff\xff\xff')
+        assert_equal(2**64-1, self.parser.parser(data2))
 
 
 class TestBytesUntil(object):
@@ -183,9 +196,11 @@ class TestBytesUntil(object):
         self.parser = BytesUntil("\n")
 
     def test_parser(self):
-        data = IOBuffer("hello\nworld\n")
-        assert_equal('hello', self.parser.parser(data))
-        assert_equal('world', self.parser.parser(data))
+        data1 = IOBuffer("hello")
+        assert_equal(None, self.parser.parser(data1))
+        data2 = IOBuffer("\nworld\n")
+        assert_equal('hello', self.parser.parser(data2))
+        assert_equal('world', self.parser.parser(data2))
 
         
 class TestCombine(object):
@@ -227,8 +242,10 @@ class TestThen(object):
         self.parser = Bytes(2).then(lambda x: x*3)
 
     def test_parser(self):
-        data = IOBuffer('hello world')
-        assert_equal('hehehe', self.parser.parser(data))
+        data1 = IOBuffer('h')
+        assert_equal(None, self.parser.parser(data1))
+        data2 = IOBuffer('ello world')
+        assert_equal('hehehe', self.parser.parser(data2))
 
 class TestLink(object):
 
@@ -236,5 +253,7 @@ class TestLink(object):
         self.parser = Bytes(2).link(lambda x: Bytes(2))
 
     def test_parser(self):
-        data = IOBuffer('hello world')
-        assert_equal('ll', self.parser.parser(data))
+        data1 = IOBuffer('hel')
+        assert_equal(None, self.parser.parser(data1))
+        data2 = IOBuffer('l')
+        assert_equal('ll', self.parser.parser(data2))
