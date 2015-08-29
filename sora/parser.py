@@ -125,6 +125,11 @@ class Byte(Parser):
         else:
             return None
 
+class NoneParser(Parser):
+    """ just return None """
+    def parser(self, data):
+        return None
+
 class Bytes(Parser):
     """ parser multi bytes """
     def __init__(self, n):

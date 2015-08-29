@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from sora.parser import SizedParserBuffer, UnsizedParserBuffer, Byte, Bytes, BytesUntil, Short, UnsignedShort, Int, UnsignedInt, Long, UnsignedLong
+from sora.parser import SizedParserBuffer, UnsizedParserBuffer, Byte, Bytes, BytesUntil, Short, UnsignedShort, Int, UnsignedInt, Long, UnsignedLong, NoneParser
 from sora.iobuffer import IOBuffer
 from nose.tools import assert_equal
 
@@ -102,6 +102,15 @@ class TestByte(object):
         data = IOBuffer('hi')
         assert_equal('h', self.parser.parser(data))
         assert_equal('i', self.parser.parser(data))
+        assert_equal(None, self.parser.parser(data))
+
+
+class TestNoneParser(object):
+    def setup(self):
+        self.parser = NoneParser()
+
+    def test_parser(self):
+        data = IOBuffer('bar')
         assert_equal(None, self.parser.parser(data))
 
 
