@@ -256,7 +256,7 @@ class _Combinater(Parser):
         self.index = 0
     def parser(self, data):
         result = self._parser[self.index].parser(data)
-        if (result):
+        if result is not None:
             if (self.index == 0):
                 self._result[self.index] = result
                 self.index += 1
@@ -277,7 +277,7 @@ class _PreCombinater(_Combinater):
         self.index = 0
     def parser(self, data):
         result = self._parser[self.index].parser(data)
-        if (result):
+        if result is not None:
             if (self.index == 0):
                 self._result[self.index] = result
                 self.index += 1
@@ -298,7 +298,7 @@ class _SufCombinater(_Combinater):
         self.index = 0
     def parser(self, data):
         result = self._parser[self.index].parser(data)
-        if (result):
+        if result is not None:
             if (self.index == 0):
                 self._result[self.index] = result
                 self.index += 1
@@ -319,7 +319,7 @@ class _Then(Parser):
 
     def parser(self, data):
         result = self.parser1.parser(data)
-        if (result):
+        if result is not None:
             return self.func(result)
         else:
             None
@@ -334,7 +334,7 @@ class _Link(Parser):
     def parser(self, data):
         if self.parser2 is None:
             result = self.parser1.parser(data)
-            if (result):
+            if result is not None:
                 self.parser2 = self.func(result)
                 result =  self.parser2.parser(data)
                 if (result is not None):

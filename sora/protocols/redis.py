@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from sora.parser import Byte, Bytes, BytesUntil
+from sora.parser import Byte, Bytes, BytesUntil, NoneParser
 
 def simple_strings_parser():
     return BytesUntil('\r\n')
@@ -12,7 +12,12 @@ def integers_parser():
     return BytesUntil('\r\n').then(lambda n: int(n))
 
 def bulk_strings_parser():
-    return BytesUntil('\r\n').link(lambda x: Bytes(int(x)).precombine(Bytes(2)))
+    def help(n):
+        if n >= 0:
+            return Bytes(n).precombine(Bytes(2))
+        if n < 0:
+            return NoneParser()
+    return BytesUntil('\r\n').link(lambda n: help(int(n)))
 
 def arrays_parser():
     def help(n):
