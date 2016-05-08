@@ -2,6 +2,11 @@
 
 import struct
 
+from sora.utils import Singleton
+
+class Uncomplete(Singleton):
+    pass
+
 class SizedParserBuffer(object):
     """ Buffer sized data """
     def __init__(self, n):
@@ -123,12 +128,17 @@ class Byte(Parser):
         if (data.has_next):
             return data.next
         else:
-            return None
+            return Uncomplete()
 
 class NoneParser(Parser):
     """ just return None """
     def parser(self, data):
         return None
+
+class EmptyTupleParser(Parser):
+    """ just return empty tuple """
+    def parser(self, data):
+        return ()
 
 class Bytes(Parser):
     """ parser multi bytes """
@@ -142,7 +152,7 @@ class Bytes(Parser):
             self.buffer.reset()
             return result
         else:
-            return None
+            return Uncomplete()
 
 class Short(Parser):
     """ parser short """
@@ -156,7 +166,7 @@ class Short(Parser):
             self.buffer.reset()
             return struct.unpack('>h', result)[0]
         else:
-            return None
+            return Uncomplete()
 
 
 class UnsignedShort(Parser):
@@ -171,7 +181,7 @@ class UnsignedShort(Parser):
             self.buffer.reset()
             return struct.unpack('>H', result)[0]
         else:
-            return None
+            return Uncomplete()
 
 
 class Int(Parser):
@@ -186,7 +196,7 @@ class Int(Parser):
             self.buffer.reset()
             return struct.unpack('>i', result)[0]
         else:
-            return None
+            return Uncomplete()
 
 class UnsignedInt(Parser):
     """ parser unsigned int """
@@ -200,7 +210,7 @@ class UnsignedInt(Parser):
             self.buffer.reset()
             return struct.unpack('>I', result)[0]
         else:
-            return None
+            return Uncomplete()
 
 
 class Long(Parser):
@@ -215,7 +225,7 @@ class Long(Parser):
             self.buffer.reset()
             return struct.unpack('>q', result)[0]
         else:
-            return None
+            return Uncomplete()
 
 class UnsignedLong(Parser):
     """ parser unsigned long """
@@ -229,7 +239,7 @@ class UnsignedLong(Parser):
             self.buffer.reset()
             return struct.unpack('>Q', result)[0]
         else:
-            return None
+            return Uncomplete()
 
 
 class BytesUntil(Parser):
@@ -245,7 +255,7 @@ class BytesUntil(Parser):
             self.buffer.reset()
             return result
         else:
-            return None
+            return Uncomplete()
 
 
 class _Combinater(Parser):
@@ -256,7 +266,7 @@ class _Combinater(Parser):
         self.index = 0
     def parser(self, data):
         result = self._parser[self.index].parser(data)
-        if result is not None:
+        if result is not Uncomplete():
             if (self.index == 0):
                 self._result[self.index] = result
                 self.index += 1
@@ -266,7 +276,7 @@ class _Combinater(Parser):
                 self.index = 0
                 return tuple(self._result)
         else:
-            None
+            return Uncomplete()
 
 
 class _PreCombinater(_Combinater):
@@ -277,7 +287,7 @@ class _PreCombinater(_Combinater):
         self.index = 0
     def parser(self, data):
         result = self._parser[self.index].parser(data)
-        if result is not None:
+        if result is not Uncomplete():
             if (self.index == 0):
                 self._result[self.index] = result
                 self.index += 1
@@ -287,7 +297,7 @@ class _PreCombinater(_Combinater):
                 self.index = 0
                 return self._result[0]
         else:
-            None
+            return Uncomplete()
 
 
 class _SufCombinater(_Combinater):
@@ -298,7 +308,7 @@ class _SufCombinater(_Combinater):
         self.index = 0
     def parser(self, data):
         result = self._parser[self.index].parser(data)
-        if result is not None:
+        if result is not Uncomplete():
             if (self.index == 0):
                 self._result[self.index] = result
                 self.index += 1
@@ -308,7 +318,7 @@ class _SufCombinater(_Combinater):
                 self.index = 0
                 return self._result[1]
         else:
-            None
+            return Uncomplete()
 
 
 class _Then(Parser):
@@ -319,10 +329,10 @@ class _Then(Parser):
 
     def parser(self, data):
         result = self.parser1.parser(data)
-        if result is not None:
+        if result is not Uncomplete():
             return self.func(result)
         else:
-            None
+            return Uncomplete()
 
 class _Link(Parser):
 
@@ -337,14 +347,14 @@ class _Link(Parser):
             if result is not None:
                 self.parser2 = self.func(result)
                 result =  self.parser2.parser(data)
-                if (result is not None):
+                if result is not Uncomplete():
                     self.parser2 = None
                 return result
             else:
-                return None
+                return Uncomplete()
         else:
             result =  self.parser2.parser(data)
-            if (result is not None):
+            if result is not Uncomplete():
                 self.parser2 = None
             return result
 

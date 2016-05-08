@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from sora.parser import Byte, Bytes, BytesUntil, NoneParser
+from sora.parser import Byte, Bytes, BytesUntil, NoneParser, EmptyTupleParser
 
 def simple_strings_parser():
     return BytesUntil('\r\n')
@@ -22,12 +22,16 @@ def bulk_strings_parser():
 def arrays_parser():
     def help(n):
         parser = command_parser()
+        if n < 0:
+            return NoneParser()
+        if n == 0:
+            return EmptyTupleParser()
         if n == 1:
-            parser = command_parser().then(lambda x: (x, ))
+            return command_parser().then(lambda x: (x, ))
         if n > 1:
             for i in range(n-1):
                 parser = parser.combine(command_parser())
-        return parser
+            return parser
     return BytesUntil('\r\n').link(lambda n: help(int(n)))
 
 def command_parser():

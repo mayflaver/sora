@@ -1,6 +1,8 @@
 from sora.iobuffer import IOBuffer
 from sora.protocols.redis import command_parser
+from sora.parser import Uncomplete
 from nose.tools import assert_equal
+
 
 class TestRedis(object):
 
@@ -20,19 +22,25 @@ class TestRedis(object):
         assert_equal(0, self.parser.parser(data))
 
     def test_bulk_strings_parser(self):
+        # data = IOBuffer('$-1\r\n')
+        # assert_equal(None, self.parser.parser(data))
+        data = IOBuffer('$0\r\n\r\n')        
+        assert_equal('', self.parser.parser(data))        
         data = IOBuffer('$6\r\nfoobar\r\n')
         assert_equal('foobar', self.parser.parser(data))
 
     def test_array_string_parser(self):
+        unexist_data = IOBuffer('*-1\r\n')
+        assert_equal(None, self.parser.parser(unexist_data))
         # empty array
         data0 = IOBuffer('*0\r\n')
-        assert_equal(None, self.parser.parser(data0))
+        assert_equal((), self.parser.parser(data0))
         # array with 1 element
         data1 = IOBuffer('*1\r\n$3\r\nfoo\r\n')
         assert_equal(('foo',), self.parser.parser(data1))
         # array with >1 element
         data2 = IOBuffer('*2\r\n$3\r\nfoo\r\n$3\r\n')
-        assert_equal(None, self.parser.parser(data2))
+        assert_equal(Uncomplete(), self.parser.parser(data2))
         data3 = IOBuffer('bar\r\n')
         assert_equal(('foo', 'bar'), self.parser.parser(data3))
 

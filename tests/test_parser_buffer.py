@@ -1,9 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from sora.parser import SizedParserBuffer, UnsizedParserBuffer, Byte, Bytes, BytesUntil, Short, UnsignedShort, Int, UnsignedInt, Long, UnsignedLong, NoneParser
+from sora.parser import *
 from sora.iobuffer import IOBuffer
-from nose.tools import assert_equal
+from nose.tools import assert_equal, assert_is
 
+class TestUncomplete(object):
+    def setUp(self):
+        self.Uncomplete1 = Uncomplete()
+        self.Uncomplete2 = Uncomplete()
+
+    def test_is_Uncomplete(self):
+        assert_is(self.Uncomplete1, self.Uncomplete2)
+
+        
 class TestSizedParserBuffer(object):
 
     def setUp(self):
@@ -102,7 +111,7 @@ class TestByte(object):
         data = IOBuffer('hi')
         assert_equal('h', self.parser.parser(data))
         assert_equal('i', self.parser.parser(data))
-        assert_equal(None, self.parser.parser(data))
+        assert_equal(Uncomplete(), self.parser.parser(data))
 
 
 class TestNoneParser(object):
@@ -112,6 +121,14 @@ class TestNoneParser(object):
     def test_parser(self):
         data = IOBuffer('bar')
         assert_equal(None, self.parser.parser(data))
+
+class TestEmptyTupleParser(object):
+    def setup(self):
+        self.parser = EmptyTupleParser()
+
+    def test_parser(self):
+        data = IOBuffer('bar')
+        assert_equal((), self.parser.parser(data))
 
 
 class TestBytes(object):
@@ -123,7 +140,7 @@ class TestBytes(object):
         data = IOBuffer('hello world')
         assert_equal('hell', self.parser.parser(data))
         assert_equal('o wo', self.parser.parser(data))
-        assert_equal(None, self.parser.parser(data))
+        assert_equal(Uncomplete(), self.parser.parser(data))
 
 
 class TestShort(object):
@@ -133,7 +150,7 @@ class TestShort(object):
 
     def test_parser(self):
         data1 = IOBuffer('\xff')
-        assert_equal(None, self.parser.parser(data1))
+        assert_equal(Uncomplete(), self.parser.parser(data1))
         data2 = IOBuffer('\xff')
         assert_equal(-1, self.parser.parser(data2))
 
@@ -145,7 +162,7 @@ class TestUnsignedShort(object):
 
     def test_parser(self):
         data1 = IOBuffer('\xff')
-        assert_equal(None, self.parser.parser(data1))
+        assert_equal(Uncomplete(), self.parser.parser(data1))
         data2 = IOBuffer('\xff')
         assert_equal(2**16-1, self.parser.parser(data2))
 
@@ -157,7 +174,7 @@ class TestInt(object):
 
     def test_parser(self):
         data1 = IOBuffer('\xff')
-        assert_equal(None, self.parser.parser(data1))
+        assert_equal(Uncomplete(), self.parser.parser(data1))
 
         data2 = IOBuffer('\xff\xff\xff')
         assert_equal(-1, self.parser.parser(data2))
@@ -170,7 +187,7 @@ class TestUnsignedInt(object):
 
     def test_parser(self):
         data1 = IOBuffer('\xff')
-        assert_equal(None, self.parser.parser(data1))
+        assert_equal(Uncomplete(), self.parser.parser(data1))
         data2 = IOBuffer('\xff\xff\xff')
         assert_equal(2**32-1, self.parser.parser(data2))
 
@@ -182,7 +199,7 @@ class TestLong(object):
 
     def test_parser(self):
         data1 = IOBuffer('\xff\xff\xff\xff')
-        assert_equal(None, self.parser.parser(data1))
+        assert_equal(Uncomplete(), self.parser.parser(data1))
         data2 = IOBuffer('\xff\xff\xff\xff')
         assert_equal(-1, self.parser.parser(data2))
 
@@ -194,7 +211,7 @@ class TestUnsignedLong(object):
 
     def test_parser(self):
         data1 = IOBuffer('\xff\xff\xff\xff')
-        assert_equal(None, self.parser.parser(data1))
+        assert_equal(Uncomplete(), self.parser.parser(data1))
         data2 = IOBuffer('\xff\xff\xff\xff')
         assert_equal(2**64-1, self.parser.parser(data2))
 
@@ -206,7 +223,7 @@ class TestBytesUntil(object):
 
     def test_parser(self):
         data1 = IOBuffer("hello")
-        assert_equal(None, self.parser.parser(data1))
+        assert_equal(Uncomplete(), self.parser.parser(data1))
         data2 = IOBuffer("\nworld\n")
         assert_equal('hello', self.parser.parser(data2))
         assert_equal('world', self.parser.parser(data2))
@@ -220,7 +237,7 @@ class TestCombine(object):
     def test_parser(self):
         data = IOBuffer('hello world')
         assert_equal(('hell', 'o wo'), self.parser.parser(data))
-        assert_equal(None, self.parser.parser(data))
+        assert_equal(Uncomplete(), self.parser.parser(data))
 
 
 class TestPreCombine(object):
@@ -231,7 +248,7 @@ class TestPreCombine(object):
     def test_parser(self):
         data = IOBuffer('hello world')
         assert_equal('hell', self.parser.parser(data))
-        assert_equal(None, self.parser.parser(data))
+        assert_equal(Uncomplete(), self.parser.parser(data))
 
 
 class TestSufCombine(object):
@@ -242,7 +259,7 @@ class TestSufCombine(object):
     def test_parser(self):
         data = IOBuffer('hello world')
         assert_equal('o wo', self.parser.parser(data))
-        assert_equal(None, self.parser.parser(data))
+        assert_equal(Uncomplete(), self.parser.parser(data))
 
 
 class TestThen(object):
@@ -252,7 +269,7 @@ class TestThen(object):
 
     def test_parser(self):
         data1 = IOBuffer('h')
-        assert_equal(None, self.parser.parser(data1))
+        assert_equal(Uncomplete(), self.parser.parser(data1))
         data2 = IOBuffer('ello world')
         assert_equal('hehehe', self.parser.parser(data2))
 
@@ -263,6 +280,6 @@ class TestLink(object):
 
     def test_parser(self):
         data1 = IOBuffer('hel')
-        assert_equal(None, self.parser.parser(data1))
+        assert_equal(Uncomplete(), self.parser.parser(data1))
         data2 = IOBuffer('l')
         assert_equal('ll', self.parser.parser(data2))
