@@ -43,3 +43,11 @@ class TestIOBuffer(object):
     def test_taken(self):
         self.iobuffer.take(5)
         assert_equal(5, self.iobuffer.taken)
+
+    def test_write_to(self):
+        class MockTransport(object):
+            def write(self, data):
+                return len(data)
+
+        self.iobuffer.write_to(MockTransport())
+        assert_equal(0, self.iobuffer.remaining)
